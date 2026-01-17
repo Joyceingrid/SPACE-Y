@@ -1,0 +1,52 @@
+import pandas as pd
+import requests
+from io import BytesIO
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# URL of the CSV
+URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DS0321EN-SkillsNetwork/datasets/dataset_part_2.csv"
+
+# Download CSV using requests
+resp = requests.get(URL)
+resp.raise_for_status()  # ensure we got the file
+
+# Read into pandas directly from bytes
+dataset_part_2_csv = BytesIO(resp.content)
+df = pd.read_csv(dataset_part_2_csv)
+sns.catplot(y="PayloadMass", x="FlightNumber", hue="Class", data=df, aspect = 5)
+plt.xlabel("Flight Number",fontsize=20)
+plt.ylabel("Pay load Mass (kg)",fontsize=20)
+#plt.show()
+sns.scatterplot(data=df,y="PayloadMass", x="Launch_Site", hue="Class")
+mean_class=df.groupby('Orbit')['Class'].mean().reset_index()
+mean_class.rename(columns={'Class':'mean_class'}, inplace=True)
+print(mean_class)
+total_class0= mean_class['mean_class'].sum()
+plt.bar(mean_class['Orbit'],mean_class['mean_class']/total_class0*100)
+plt.xlabel("Orbit Type")
+plt.ylabel("Success rate")
+sns.scatterplot(data=df,y="PayloadMass", x="Orbit", hue="Class")
+plt.show()
+year=[]
+def Extract_year():
+    for i in df["Date"]:
+        year.append(i.split("-")[0])
+    return year
+Extract_year()
+df['Date'] = year
+#print(df.head())
+success_year=df.groupby('Date')['Class'].mean().reset_index()
+success_year.rename(columns={'Class':'average_class'}, inplace=True)
+success_year.rename(columns={'Date':'Year'}, inplace=True)
+total_class= success_year['average_class'].sum()
+plt.plot(success_year['Year'],success_year['average_class']/total_class*100)
+plt.xlabel("Year")
+plt.ylabel("Success rate")
+#plt.show()
+features = df[['FlightNumber', 'PayloadMass', 'Orbit', 'LaunchSite', 'Flights', 'GridFins', 'Reused', 'Legs', 'LandingPad', 'Block', 'ReusedCount', 'Serial']]
+features_one_hot=pd.get_dummies(features,columns=['Orbit','LaunchSite','LandingPad','Serial'])
+print(features_one_hot.head())
+features_one_hot=features_one_hot.astype('float64')
+features_one_hot.to_csv('dataset_part_3.csv', index=False)
+
