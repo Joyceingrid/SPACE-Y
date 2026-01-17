@@ -1,0 +1,8 @@
+%load_ext sql
+
+import csv, sqlite3
+import prettytable
+prettytable.DEFAULT = 'DEFAULT'
+
+con = sqlite3.connect("my_data1.db")
+cur = con.cursor()
