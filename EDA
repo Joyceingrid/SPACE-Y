@@ -1,8 +1,23 @@
-%load_ext sql
-
 import csv, sqlite3
 import prettytable
+import pandas as pd
 prettytable.DEFAULT = 'DEFAULT'
-
 con = sqlite3.connect("my_data1.db")
 cur = con.cursor()
+df = pd.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DS0321EN-SkillsNetwork/labs/module_2/data/Spacex.csv")
+df.to_sql("SPACEXTBL", con, if_exists='replace', index=False,method="multi")
+#print(df.head())
+#print(df.columns)
+#print(df['Mission_Outcome'])
+#cur.execute("SELECT * FROM SPACEXTBL WHERE Launch_Site LIKE 'CCA%' ")
+cur.execute("SELECT DISTINCT Launch_Site FROM SPACEXTBL")
+#cur.execute("SELECT sum(PAYLOAD_MASS__KG_ ) FROM SPACEXTBL WHERE Customer ='NASA (CRS)'")
+#cur.execute("SELECT AVG(PAYLOAD_MASS__KG_ ) FROM SPACEXTBL WHERE Booster_Version ='F9 v1.1'")
+#cur.execute("SELECT min(Date) FROM SPACEXTBL WHERE Mission_Outcome='Success'")
+#cur.execute("SELECT count(Date) FROM SPACEXTBL WHERE Mission_Outcome='Success'")
+#cur.execute("SELECT count(Date) FROM SPACEXTBL WHERE Mission_Outcome='Failure'")
+#cur.execute("SELECT sum(PAYLOAD_MASS__KG_ ),Booster_Version FROM SPACEXTBL GROUP BY Booster_Version")
+#cur.execute("SELECT SUBSTR(Date,6,2),Landing_Outcome,Booster_Version,Launch_Site FROM SPACEXTBL WHERE  SUBSTR(Date,0,5)='2015' AND Landing_Outcome like 'Failure%'")
+#cur.execute("SELECT Count(Landing_Outcome),SUBSTR(Date,0,5) FROM SPACEXTBL WHERE Date between '2010-06-04'AND '2017-03-20'GROUP BY SUBSTR(Date,0,5)")
+rows=cur.fetchall()
+print(rows)
