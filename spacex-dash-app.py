@@ -23,7 +23,7 @@ app.layout = html.Div(children=[
         style={'textAlign': 'center', 'color': '#503D36', 'font-size': 40}
     ),
 
-    # TASK 1: Dropdown
+   
     dcc.Dropdown(
         id='site-dropdown',
         options=[
@@ -40,12 +40,10 @@ app.layout = html.Div(children=[
 
     html.Br(),
 
-    # TASK 2: Pie chart
     html.Div(dcc.Graph(id='success-pie-chart')),
 
     html.Br(),
 
-    # TASK 3: Payload slider
     html.P("Payload range (Kg):"),
 
     dcc.RangeSlider(
@@ -66,7 +64,6 @@ app.layout = html.Div(children=[
     html.Div(dcc.Graph(id='success-payload-scatter-chart'))
 ])
 
-# TASK 2: Callback for pie chart
 @app.callback(
     Output(component_id='success-pie-chart', component_property='figure'),
     Input(component_id='site-dropdown', component_property='value')
@@ -91,7 +88,6 @@ def get_pie_chart(entered_site):
         return fig
 
 
-# TASK 4: Callback for scatter plot
 @app.callback(
     Output(component_id='success-payload-scatter-chart', component_property='figure'),
     [
